@@ -1,0 +1,9 @@
+build/
+
+*~
+
+# Emacs
+.#*
+
+# Catkin custom files
+CATKIN_IGNORE
