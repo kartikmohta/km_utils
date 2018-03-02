@@ -78,8 +78,8 @@ typename Derived::PlainObject matrixSquareRoot(
   {
     typename Derived::PlainObject const L = cov_chol.matrixL();
     auto const P = cov_chol.transpositionsP();
-    auto const D2 = cov_chol.vectorD().array().sqrt().matrix().asDiagonal();
-    return P.transpose() * L * D2;
+    auto const D_sqrt = cov_chol.vectorD().array().sqrt().matrix().asDiagonal();
+    return P.transpose() * L * D_sqrt;
   }
   return Derived::PlainObject::Zero(mat.rows(), mat.cols());
 }
