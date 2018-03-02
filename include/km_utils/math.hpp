@@ -126,16 +126,20 @@ auto blockDiagonalMatrix(Eigen::EigenBase<Derived> const &X)
   constexpr auto M = Eigen::internal::traits<Derived>::RowsAtCompileTime;
   constexpr auto N = Eigen::internal::traits<Derived>::ColsAtCompileTime;
 
-  constexpr auto out_rows =
-      (M == Eigen::Dynamic) ? Eigen::Dynamic : M * static_cast<int>(num_repeat);
-  constexpr auto out_cols =
-      (N == Eigen::Dynamic) ? Eigen::Dynamic : N * static_cast<int>(num_repeat);
+  auto const in_rows = (M == Eigen::Dynamic) ? X.rows() : M;
+  auto const in_cols = (N == Eigen::Dynamic) ? X.cols() : N;
+  auto const out_rows = num_repeat * in_rows;
+  auto const out_cols = num_repeat * in_cols;
+  constexpr auto out_template_rows =
+      (M == Eigen::Dynamic) ? Eigen::Dynamic : out_rows;
+  constexpr auto out_template_cols =
+      (N == Eigen::Dynamic) ? Eigen::Dynamic : out_cols;
 
-  auto ret =
-      Mat<Scalar, out_rows, out_cols>::Zero(M * num_repeat, N * num_repeat)
-          .eval();
+  auto ret = Eigen::Matrix<Scalar, out_template_rows, out_template_cols>::Zero(
+                 out_rows, out_cols)
+                 .eval();
 
-  if(M != Eigen::Dynamic && N != Eigen::Dynamic)
+  if constexpr(M != Eigen::Dynamic && N != Eigen::Dynamic)
   {
     for(unsigned int i = 0; i < num_repeat; ++i)
       ret.template block<M, N>(i * M, i * N) = X;
@@ -143,7 +147,7 @@ auto blockDiagonalMatrix(Eigen::EigenBase<Derived> const &X)
   else
   {
     for(unsigned int i = 0; i < num_repeat; ++i)
-      ret.block(i * M, i * N, M, N) = X;
+      ret.block(i * in_rows, i * in_cols, in_rows, in_cols) = X;
   }
   return ret;
 }
