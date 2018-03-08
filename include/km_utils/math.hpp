@@ -152,6 +152,34 @@ auto blockDiagonalMatrix(Eigen::EigenBase<Derived> const &X)
   return ret;
 }
 
+template <typename Derived>
+auto blockDiagonalMatrix(Eigen::EigenBase<Derived> const &X,
+                         unsigned int const num_repeat)
+{
+  using Scalar = typename Eigen::internal::traits<Derived>::Scalar;
+  constexpr auto M = Eigen::internal::traits<Derived>::RowsAtCompileTime;
+  constexpr auto N = Eigen::internal::traits<Derived>::ColsAtCompileTime;
+
+  auto const in_rows = X.rows();
+  auto const in_cols = X.cols();
+
+  auto ret = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(
+                 num_repeat * in_rows, num_repeat * in_cols)
+                 .eval();
+
+  if constexpr(M != Eigen::Dynamic && N != Eigen::Dynamic)
+  {
+    for(unsigned int i = 0; i < num_repeat; ++i)
+      ret.template block<M, N>(i * M, i * N) = X;
+  }
+  else
+  {
+    for(unsigned int i = 0; i < num_repeat; ++i)
+      ret.block(i * in_rows, i * in_cols, in_rows, in_cols) = X;
+  }
+  return ret;
+}
+
 template <typename T>
 T square(T p)
 {
