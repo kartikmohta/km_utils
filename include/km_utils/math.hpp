@@ -116,7 +116,7 @@ typename Derived::PlainObject pseudoInverse(Eigen::MatrixBase<Derived> const &m)
   Eigen::JacobiSVD<typename Derived::PlainObject> m_svd(m, flags);
   // std::cout << "singular values: " << m_svd.singularValues().transpose()
   //           << "\n";
-  return m_svd.solve(Derived::PlainObject::Identity(m.rows(), m.cols()));
+  return m_svd.solve(Derived::PlainObject::Identity(m.rows(), m.rows()));
 }
 
 template <unsigned int num_repeat, typename Derived>
