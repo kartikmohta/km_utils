@@ -192,6 +192,10 @@ T powInt(T x, unsigned int n)
 {
   if(n == 0)
     return T{1};
+  else if(n == 1)
+    return x;
+  else if(n == 2)
+    return x * x;
 
   auto y = T{1};
   while(n > 1)
