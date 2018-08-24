@@ -197,7 +197,8 @@ T powInt(T x, unsigned int n)
   else if(n == 2)
     return x * x;
 
-  auto y = T{1};
+  auto y = x * x;
+  n -= 2;
   while(n > 1)
   {
     if(n % 2 == 1)
