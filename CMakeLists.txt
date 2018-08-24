@@ -6,8 +6,9 @@ find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE
+target_include_directories(${PROJECT_NAME} SYSTEM INTERFACE
   ${EIGEN3_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+target_compile_options(${PROJECT_NAME} INTERFACE "-std=c++14")
 #target_link_libraries(${PROJECT_NAME} INTERFACE Boost::boost)
 
 install(TARGETS ${PROJECT_NAME} EXPORT "${PROJECT_NAME}Targets"
