@@ -208,5 +208,20 @@ T powInt(T x, unsigned int n)
   }
   return x * y;
 }
+
+/**
+ * @brief Normalize the given angle in radians to (-PI, PI]
+ *
+ * @param[in] x angle in radians
+ *
+ * @return normalized angle in the range (-PI, PI]
+ */
+template <typename Scalar_t>
+constexpr Scalar_t normalize_angle(Scalar_t x)
+{
+  constexpr Scalar_t pi = M_PI, two_pi = 2 * M_PI;
+  x -= (std::ceil((x + pi) / (two_pi)) - Scalar_t{1}) * two_pi;
+  return x;
 }
-}
+} // namespace math
+} // namespace km
