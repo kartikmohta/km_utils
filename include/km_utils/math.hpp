@@ -67,21 +67,30 @@ template <typename Derived>
 typename Derived::PlainObject matrixSquareRoot(
     Eigen::MatrixBase<Derived> const &mat, bool semidefinite_mat = false)
 {
-  if(!semidefinite_mat)
+  constexpr auto M = Derived::RowsAtCompileTime;
+  constexpr auto N = Derived::ColsAtCompileTime;
+  static_assert(M == N, "Only valid for a square matrix");
+  if constexpr(M == 0 || N == 0)
+    return Derived::PlainObject::Zero(mat.rows(), mat.cols());
+  else
   {
-    Eigen::LLT<typename Derived::PlainObject> cov_chol{mat};
+    if(!semidefinite_mat)
+    {
+      Eigen::LLT<typename Derived::PlainObject> cov_chol{mat};
+      if(cov_chol.info() == Eigen::Success)
+        return cov_chol.matrixL();
+    }
+    Eigen::LDLT<typename Derived::PlainObject> cov_chol{mat};
     if(cov_chol.info() == Eigen::Success)
-      return cov_chol.matrixL();
+    {
+      typename Derived::PlainObject const L = cov_chol.matrixL();
+      auto const P = cov_chol.transpositionsP();
+      auto const D_sqrt =
+          cov_chol.vectorD().array().sqrt().matrix().asDiagonal();
+      return P.transpose() * L * D_sqrt;
+    }
+    return Derived::PlainObject::Zero(mat.rows(), mat.cols());
   }
-  Eigen::LDLT<typename Derived::PlainObject> cov_chol{mat};
-  if(cov_chol.info() == Eigen::Success)
-  {
-    typename Derived::PlainObject const L = cov_chol.matrixL();
-    auto const P = cov_chol.transpositionsP();
-    auto const D_sqrt = cov_chol.vectorD().array().sqrt().matrix().asDiagonal();
-    return P.transpose() * L * D_sqrt;
-  }
-  return Derived::PlainObject::Zero(mat.rows(), mat.cols());
 }
 
 template <typename Vec, typename Cov>
