@@ -230,8 +230,7 @@ template <typename Scalar_t>
 constexpr Scalar_t normalize_angle(Scalar_t x)
 {
   constexpr Scalar_t pi = M_PI, two_pi = 2 * M_PI;
-  x -= (std::ceil((x + pi) / (two_pi)) - Scalar_t{1}) * two_pi;
-  return x;
+  return x - (std::ceil((x + pi) / two_pi) - Scalar_t{1}) * two_pi;
 }
 } // namespace math
 } // namespace km
