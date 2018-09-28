@@ -13,7 +13,7 @@ namespace km
 namespace math
 {
 template <typename Scalar_t, int vector_size>
-Scalar_t multivariateNormalProb(
+constexpr Scalar_t multivariateNormalProb(
     types::Vec<Scalar_t, vector_size> const &x,
     types::Vec<Scalar_t, vector_size> const &mean,
     types::SquareMat<Scalar_t, vector_size> const &cov_inverse,
@@ -26,7 +26,7 @@ Scalar_t multivariateNormalProb(
 }
 
 template <typename Scalar_t, int vector_size>
-Scalar_t multivariateNormalProb(
+constexpr Scalar_t multivariateNormalProb(
     types::Vec<Scalar_t, vector_size> const &x,
     types::Vec<Scalar_t, vector_size> const &mean,
     types::SquareMat<Scalar_t, vector_size> const &cov_inverse)
@@ -37,14 +37,14 @@ Scalar_t multivariateNormalProb(
 }
 
 template <typename Scalar_t, int mat_size>
-Scalar_t getNormalPDFConstant(
+constexpr Scalar_t getNormalPDFConstant(
     types::SquareMat<Scalar_t, mat_size> const &cov_inverse)
 {
   return std::sqrt((cov_inverse / Scalar_t{2 * M_PI}).determinant());
 }
 
 template <typename Scalar_t, int mat_size>
-std::vector<Scalar_t> getNormalPDFConstant(
+constexpr std::vector<Scalar_t> getNormalPDFConstant(
     types::vector_aligned<types::SquareMat<Scalar_t, mat_size>> const
         &vec_cov_inverse)
 {
@@ -64,7 +64,7 @@ std::vector<Scalar_t> getNormalPDFConstant(
  * @return The matrix square root of the input mat.
  */
 template <typename Derived>
-typename Derived::PlainObject matrixSquareRoot(
+constexpr typename Derived::PlainObject matrixSquareRoot(
     Eigen::MatrixBase<Derived> const &mat, bool semidefinite_mat = false)
 {
   constexpr auto M = Derived::RowsAtCompileTime;
@@ -115,7 +115,8 @@ types::vector_aligned<Vec> randomSamplesGaussian(Vec const &mean,
 }
 
 template <typename Derived>
-typename Derived::PlainObject pseudoInverse(Eigen::MatrixBase<Derived> const &m)
+constexpr typename Derived::PlainObject pseudoInverse(
+    Eigen::MatrixBase<Derived> const &m)
 {
   // JacobiSVD: thin U and V are only available when your matrix has a dynamic
   // number of columns.
@@ -129,7 +130,7 @@ typename Derived::PlainObject pseudoInverse(Eigen::MatrixBase<Derived> const &m)
 }
 
 template <unsigned int num_repeat, typename Derived>
-auto blockDiagonalMatrix(Eigen::EigenBase<Derived> const &X)
+constexpr auto blockDiagonalMatrix(Eigen::EigenBase<Derived> const &X)
 {
   using Scalar = typename Eigen::internal::traits<Derived>::Scalar;
   constexpr auto M = Eigen::internal::traits<Derived>::RowsAtCompileTime;
@@ -162,8 +163,8 @@ auto blockDiagonalMatrix(Eigen::EigenBase<Derived> const &X)
 }
 
 template <typename Derived>
-auto blockDiagonalMatrix(Eigen::EigenBase<Derived> const &X,
-                         unsigned int const num_repeat)
+constexpr auto blockDiagonalMatrix(Eigen::EigenBase<Derived> const &X,
+                                   unsigned int const num_repeat)
 {
   using Scalar = typename Eigen::internal::traits<Derived>::Scalar;
   constexpr auto M = Eigen::internal::traits<Derived>::RowsAtCompileTime;
@@ -190,14 +191,14 @@ auto blockDiagonalMatrix(Eigen::EigenBase<Derived> const &X,
 }
 
 template <typename T>
-T square(T p)
+constexpr T square(T p)
 {
   return p * p;
 }
 
 // From https://stackoverflow.com/a/33454406
 template <typename T>
-T powInt(T x, unsigned int n)
+constexpr T powInt(T x, unsigned int n)
 {
   if(n == 0)
     return T{1};
