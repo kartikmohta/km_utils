@@ -27,6 +27,17 @@ constexpr Scalar_t multivariateNormalProb(
 
 template <typename Scalar_t, int vector_size>
 constexpr Scalar_t multivariateNormalProb(
+    types::Vec<Scalar_t, vector_size> const &dx,
+    types::SquareMat<Scalar_t, vector_size> const &cov_inverse,
+    Scalar_t const normal_pdf_constant)
+{
+  Scalar_t const normal_pdf_exponent =
+      Scalar_t{-0.5} * (dx.transpose() * cov_inverse * dx).value();
+  return normal_pdf_constant * std::exp(normal_pdf_exponent);
+}
+
+template <typename Scalar_t, int vector_size>
+constexpr Scalar_t multivariateNormalProb(
     types::Vec<Scalar_t, vector_size> const &x,
     types::Vec<Scalar_t, vector_size> const &mean,
     types::SquareMat<Scalar_t, vector_size> const &cov_inverse)
@@ -36,11 +47,12 @@ constexpr Scalar_t multivariateNormalProb(
   return multivariateNormalProb(x, mean, cov_inverse, normal_pdf_constant);
 }
 
-template <typename Scalar_t, int mat_size>
-constexpr Scalar_t getNormalPDFConstant(
-    types::SquareMat<Scalar_t, mat_size> const &cov_inverse)
+template <typename Derived>
+constexpr auto getNormalPDFConstant(
+    Eigen::MatrixBase<Derived> const &cov_inverse)
 {
-  return std::sqrt((cov_inverse / Scalar_t{2 * M_PI}).determinant());
+  using Scalar = typename Eigen::internal::traits<Derived>::Scalar;
+  return std::sqrt((cov_inverse / Scalar{2 * M_PI}).determinant());
 }
 
 template <typename Scalar_t, int mat_size>
