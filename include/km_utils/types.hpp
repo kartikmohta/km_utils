@@ -24,5 +24,5 @@ using SquareMat = Mat<Scalar_t, N, N>;
 
 template <typename T>
 using vector_aligned = std::vector<T, Eigen::aligned_allocator<T>>;
-}
-}
+} // namespace types
+} // namespace km
